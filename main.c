@@ -31,6 +31,17 @@ int main(int argc, char *argv[]) {
         error("Error obtaining server address");
     }
 
+    // Create a socket
+    int sockfd = socket(serverinfo->ai_family, serverinfo->ai_socktype, serverinfo->ai_protocol);
+    if (sockfd == -1) {
+        error("Error creating socket");
+    }
+
+    // Free the address information
+    freeaddrinfo(serverinfo);
+
+    // Close the socket when done
+    close(sockfd);
 
     return 0;
 }
