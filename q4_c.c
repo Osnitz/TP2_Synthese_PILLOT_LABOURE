@@ -42,7 +42,7 @@ void sendACK(int sockfd, short blockNumber, struct addrinfo *server_info) {
     }
 }
 
-void receiveTFTPData(int sockfd, const char *outputFileName, struct addrinfo *server_info) {
+void receiveTFTPData(int sockfd, int outputFile, struct addrinfo *server_info) {
     char dataPacket[MAX_BUFFER_SIZE];
 
     // Receive the data packet from the server
@@ -68,7 +68,7 @@ void receiveTFTPData(int sockfd, const char *outputFileName, struct addrinfo *se
     const char *fileData = dataPacket + 4;
 
     // Write the data to a file
-    int outputFile = open(outputFileName, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
+    outputFile = open("Data_Received", O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR);
     if (outputFile == -1) {
         error("Error opening output file");
     }
@@ -81,9 +81,10 @@ void receiveTFTPData(int sockfd, const char *outputFileName, struct addrinfo *se
 }
 
 
+
 int main(int argc, char *argv[]) {
     // Check if the correct number of command-line arguments is provided
-    if (argc != 4) {
+    if (argc < 4) {
         write(2, user_argument, strlen(user_argument));
         exit(1);
     }
@@ -91,7 +92,6 @@ int main(int argc, char *argv[]) {
     // Extract command-line arguments
     char *host = argv[1];
     char *port = argv[2];
-    char *file = argv[3];
 
     // Set up address information for the server
     struct addrinfo hints, *server_info;
@@ -117,13 +117,15 @@ int main(int argc, char *argv[]) {
     freeaddrinfo(server_info);
 
     // gettftp
-        sendTFTPRequest(sockfd, file, server_info);
-    receiveTFTPData(sockfd,"data_Received",server_info);
-
-
-
+    int outputFile = open("Data_Received", O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
+    if (outputFile == -1) {
+        error("Error opening output file");
+    }
+    for (int i =3;i<argc;i++){
+        sendTFTPRequest(sockfd, argv[i], server_info);
+        receiveTFTPData(sockfd,outputFile,server_info);
+    }
     // Close the socket when done
     close(sockfd);
-
     return 0;
 }
