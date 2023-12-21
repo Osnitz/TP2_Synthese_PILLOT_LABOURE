@@ -1,10 +1,8 @@
 #include "function.h"
-
 void error(char *msg) {
     perror(msg);
     exit(1);
 }
-
 void sendTFTPRequest(int sockfd, const char *filename, struct addrinfo *server_info) {
     // Constructing a Read Request (RRQ) packet
     char requestPacket[MAX_BUFFER_SIZE];
@@ -44,9 +42,11 @@ void sendACK(int sockfd, short blockNumber, struct addrinfo *server_info) {
 
 void receiveTFTPData(int sockfd, int outputFile, struct addrinfo *server_info) {
     char dataPacket[MAX_BUFFER_SIZE];
+    struct sockaddr peer_addr;
+    int size_peer = sizeof (peer_addr);
 
     // Receive the data packet from the server
-    ssize_t bytesRead = recvfrom(sockfd, dataPacket, sizeof(dataPacket), 0, NULL, NULL);
+    ssize_t bytesRead = recvfrom(sockfd, dataPacket, sizeof(dataPacket), 0, &peer_addr, &size_peer);
     if (bytesRead == -1) {
         error("Error receiving TFTP data");
     }
