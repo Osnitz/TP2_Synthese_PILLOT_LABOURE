@@ -23,3 +23,8 @@ received data, and we send the ACK acknowledgment to the server using the dedica
 request for each of our arguments. It is important to open the file for the first time using O_TRUNC to erase the 
 file's content if it already exists. In subsequent iterations, we use O_APPEND so that data blocks are added without
 erasing the previous ones.
+
+5. Despite several hours of debugging, we have not been able to get rid of the unknown error we are encountering. 
+The logic of the code seems correct to us and to our lab supervisor, but we are unable to provide functional code.
+We have identified that the problem seems to originate from the receiveACK() function. We still have the printf 
+statements that we used to debug our program.

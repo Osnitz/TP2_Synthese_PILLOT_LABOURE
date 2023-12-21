@@ -1,6 +1,6 @@
 #include "function.h"
 
-void receiveACK(int sockfd, struct addrinfo *server_info, short expectedBlockNumber) {
+void receiveACK(int sockfd, short expectedBlockNumber) {
     char ackPacket[4];
     struct sockaddr peer_addr;
     int size_peer = sizeof (peer_addr);
@@ -87,7 +87,7 @@ void sendFileData(int sockfd, const char *filename, struct addrinfo *server_info
         }
         printf("avant ACK ");
         // Wait for ACK
-        receiveACK(sockfd, server_info, blockNumber);
+        receiveACK(sockfd, blockNumber);
         printf("apres recev ACK");
     }
 
